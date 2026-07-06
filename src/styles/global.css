@@ -1,0 +1,192 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-void: #05080a;
+  --color-panel: #0a141c;
+  --color-panel-2: #0d1620;
+  --color-ink: #c7d6dd;
+  --color-dim: #5b7482;
+  --color-neon: #39ff9c;
+  --color-volt: #4da6ff;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-neon) 30%, transparent);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-neon);
+  outline-offset: 2px;
+}
+
+/* ── CRT / scanline dressing ─────────────────────────────────── */
+
+.scanlines {
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 2px,
+    rgba(0, 0, 0, 0.55) 3px,
+    transparent 4px
+  );
+}
+
+@keyframes crt-flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  93% {
+    opacity: 0.92;
+  }
+  94% {
+    opacity: 1;
+  }
+  97% {
+    opacity: 0.96;
+  }
+}
+
+.crt-flicker {
+  animation: crt-flicker 3.7s infinite steps(1);
+}
+
+@keyframes boot-cursor {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.boot-cursor {
+  animation: boot-cursor 1s infinite steps(1);
+}
+
+/* CRT power-off collapse revealing the scene behind the boot overlay */
+@keyframes boot-wipe {
+  0% {
+    transform: scale(1, 1);
+    filter: brightness(1);
+    opacity: 1;
+  }
+  55% {
+    transform: scale(1, 0.006);
+    filter: brightness(6);
+    opacity: 1;
+  }
+  85% {
+    transform: scale(0.15, 0.004);
+    filter: brightness(12);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0, 0.002);
+    filter: brightness(16);
+    opacity: 0;
+  }
+}
+
+.boot-wipe {
+  background: transparent;
+  pointer-events: none;
+}
+
+.boot-wipe > div {
+  animation: boot-wipe 0.7s cubic-bezier(0.6, 0, 0.9, 0.4) forwards;
+  background: var(--color-void);
+}
+
+@keyframes machine-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.machine-fade-in {
+  animation: machine-fade-in 0.9s ease-out both;
+}
+
+/* hologram panels initializing inside the 3D scene */
+@keyframes holo-in {
+  0% {
+    opacity: 0;
+    transform: translateY(6px) scaleY(0.6);
+    filter: brightness(2.5);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(0) scaleY(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+    filter: brightness(1);
+  }
+}
+
+.holo-in {
+  animation: holo-in 0.45s ease-out both;
+}
+
+/* HUD room label glitch swap */
+@keyframes hud-glitch {
+  0% {
+    transform: translateX(0);
+    clip-path: inset(0 0 0 0);
+  }
+  20% {
+    transform: translateX(-3px);
+    clip-path: inset(0.2em 0 0.1em 0);
+  }
+  40% {
+    transform: translateX(2px);
+    clip-path: inset(0 0 0.35em 0);
+  }
+  60% {
+    transform: translateX(-1px);
+    clip-path: inset(0.3em 0 0 0);
+  }
+  100% {
+    transform: translateX(0);
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+.hud-glitch {
+  animation: hud-glitch 0.32s steps(2) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crt-flicker,
+  .hud-glitch,
+  .holo-in,
+  .machine-fade-in {
+    animation: none;
+  }
+}
+
+/* 2D fallback niceties */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

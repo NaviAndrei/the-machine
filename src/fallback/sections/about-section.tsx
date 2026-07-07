@@ -34,6 +34,13 @@ export function AboutSection() {
               {entry.title} <span className="text-dim">· {entry.org}</span>
             </p>
             <p className="mt-1 max-w-xl text-xs leading-relaxed text-dim">{entry.details}</p>
+            {entry.project && (
+              <div className="mt-3 max-w-xl border-l-2 border-volt/50 pl-3">
+                <p className="text-[10px] tracking-[0.3em] text-volt">{entry.project.tag}</p>
+                <p className="mt-1 text-xs text-ink/90">{entry.project.title}</p>
+                <p className="mt-1 text-xs leading-relaxed text-dim">{entry.project.body}</p>
+              </div>
+            )}
           </li>
         ))}
       </ol>

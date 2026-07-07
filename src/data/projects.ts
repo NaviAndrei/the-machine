@@ -49,7 +49,7 @@ export const PROJECTS: ProjectEntry[] = [
     description:
       'BIOS boot sequence into a navigable 3D machine. React Three Fiber world with a full 2D fallback for accessibility and low-end devices. You are inside it right now.',
     stack: ['React', 'TypeScript', 'Three.js', 'Tailwind'],
-    repoUrl: 'https://github.com/NaviAndrei',
+    repoUrl: 'https://github.com/NaviAndrei/the-machine',
     status: 'online',
   },
 ]

@@ -40,6 +40,12 @@ export interface TimelineEntry {
   title: string
   org: string
   details: string
+  /** side initiative/project taken on within this role — rendered as a nested sub-note, not a separate job */
+  project?: {
+    tag: string
+    title: string
+    body: string
+  }
 }
 
 export interface NarrativeBlock {

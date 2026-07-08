@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useMachine } from '../state/store'
 import { webglCapable } from '../lib/detect-capability'
 import { sectionIdFromHash } from '../lib/use-hash-sync'
@@ -15,14 +15,75 @@ const NAV = [
   { id: 'contact', label: '/contact' },
 ]
 
+const NAV_OPEN_KEY = 'nav-open'
+
 export function FlatSite() {
   const setMode = useMachine((s) => s.setMode)
+  // FIX: mobile nav hamburger
+  const [navOpen, setNavOpen] = useState(() => {
+    try {
+      return localStorage.getItem(NAV_OPEN_KEY) === 'true'
+    } catch {
+      return false
+    }
+  })
 
   // deep links like #/projects land on the right section
   useEffect(() => {
     const id = sectionIdFromHash()
     if (id) document.getElementById(id)?.scrollIntoView()
   }, [])
+
+  const toggleNav = () => {
+    const next = !navOpen
+    setNavOpen(next)
+    try {
+      localStorage.setItem(NAV_OPEN_KEY, String(next))
+    } catch {
+      /* storage unavailable — state just won't persist */
+    }
+  }
+
+  const closeNav = () => {
+    setNavOpen(false)
+    try {
+      localStorage.setItem(NAV_OPEN_KEY, 'false')
+    } catch {
+      /* storage unavailable — state just won't persist */
+    }
+  }
+
+  const navLinks = (onNavigate?: () => void) => (
+    <>
+      {NAV.map((item) => (
+        <a
+          key={item.id}
+          href={`#/${item.id}`}
+          onClick={(event) => {
+            event.preventDefault()
+            document.getElementById(item.id)?.scrollIntoView()
+            history.replaceState(null, '', `#/${item.id}`)
+            onNavigate?.()
+          }}
+          className="inline-flex min-h-11 items-center text-xs tracking-wider text-dim transition-colors motion-reduce:transition-none hover:text-neon focus-visible:text-neon active:text-neon"
+        >
+          {item.label}
+        </a>
+      ))}
+      {webglCapable() && (
+        <button
+          type="button"
+          onClick={() => {
+            onNavigate?.()
+            setMode('3d')
+          }}
+          className="flex min-h-11 items-center justify-center border border-volt/50 px-2.5 py-1 text-xs tracking-widest text-volt transition-colors motion-reduce:transition-none hover:border-volt hover:bg-volt/10 active:border-volt active:bg-volt/10"
+        >
+          BOOT 3D ▸
+        </button>
+      )}
+    </>
+  )
 
   return (
     <div className="min-h-full bg-void font-mono text-ink">
@@ -34,32 +95,28 @@ export function FlatSite() {
       </a>
 
       <header className="sticky top-0 z-40 border-b border-panel-2 bg-void/90 backdrop-blur">
-        <nav aria-label="Primary" className="mx-auto flex max-w-4xl flex-wrap items-center gap-x-5 gap-y-2 px-4 py-3">
+        <nav aria-label="Primary" className="mx-auto flex max-w-4xl items-center gap-x-5 px-4 py-3">
           <span className="mr-auto text-sm tracking-widest text-neon">IVAN_ANDREI ▮</span>
-          {NAV.map((item) => (
-            <a
-              key={item.id}
-              href={`#/${item.id}`}
-              onClick={(event) => {
-                event.preventDefault()
-                document.getElementById(item.id)?.scrollIntoView()
-                history.replaceState(null, '', `#/${item.id}`)
-              }}
-              className="text-xs tracking-wider text-dim transition-colors hover:text-neon focus-visible:text-neon"
-            >
-              {item.label}
-            </a>
-          ))}
-          {webglCapable() && (
-            <button
-              type="button"
-              onClick={() => setMode('3d')}
-              className="border border-volt/50 px-2.5 py-1 text-xs tracking-widest text-volt transition-colors hover:border-volt hover:bg-volt/10"
-            >
-              BOOT 3D ▸
-            </button>
-          )}
+          {/* FIX: mobile nav hamburger — links stay inline on wider screens, single row never wraps */}
+          <div className="hidden items-center gap-x-5 sm:flex">{navLinks()}</div>
+          <button
+            type="button"
+            onClick={toggleNav}
+            aria-expanded={navOpen}
+            aria-controls="mobile-nav"
+            className="flex min-h-11 min-w-11 items-center justify-center border border-dim/40 text-sm text-dim transition-colors hover:border-neon hover:text-neon sm:hidden"
+          >
+            {navOpen ? '✕' : '☰'}
+          </button>
         </nav>
+        {navOpen && (
+          <div
+            id="mobile-nav"
+            className="flex flex-col gap-3 border-t border-panel-2 px-4 py-4 sm:hidden"
+          >
+            {navLinks(closeNav)}
+          </div>
+        )}
       </header>
 
       <main id="main" className="mx-auto max-w-4xl px-4">

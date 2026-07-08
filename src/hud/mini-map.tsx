@@ -44,11 +44,9 @@ export function MiniMap() {
   return (
     <svg
       viewBox={`0 0 ${W} ${H}`}
-      width={W}
-      height={H}
       role="group"
       aria-label="Machine map — click a room to travel"
-      className="border border-panel-2 bg-void/80 backdrop-blur"
+      className="h-auto w-[34vw] min-w-[130px] max-w-[163px] border border-panel-2 bg-void/80 backdrop-blur"
     >
       {/* corridors */}
       {CORRIDORS.map((corridor) => (
@@ -72,7 +70,7 @@ export function MiniMap() {
           fill: active ? `${room.accent}22` : '#0a141c',
           stroke,
           strokeWidth: 1.5,
-          className: 'cursor-pointer transition-colors hover:stroke-neon focus:outline-none',
+          className: 'cursor-pointer transition-colors motion-reduce:transition-none hover:stroke-neon active:stroke-neon focus:outline-none',
           tabIndex: 0,
           role: 'button',
           'aria-label': `Travel to ${room.path === '/' ? 'front bus' : room.path}`,

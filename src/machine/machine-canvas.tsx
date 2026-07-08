@@ -26,7 +26,7 @@ export function MachineCanvas() {
         camera={{ fov: 70, near: 0.1, far: 90, position: [0, 1.6, 3] }}
         gl={{ antialias: false, powerPreference: 'high-performance' }}
         onCreated={({ gl }) => gl.setClearColor('#05080a')}
-        aria-hidden="true"
+        style={{ touchAction: 'none' }}
       >
         <PerformanceMonitor
           onDecline={() => {

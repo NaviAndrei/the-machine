@@ -2,7 +2,7 @@ import { PROFILE } from '../../data/profile'
 
 export function AboutSection() {
   return (
-    <section id="about" aria-labelledby="about-heading" className="border-b border-panel-2 py-16">
+    <section id="about" aria-labelledby="about-heading" className="scroll-mt-36 border-b border-panel-2 py-16">
       <h2 id="about-heading" className="text-lg tracking-[0.25em] text-neon">
         /ABOUT <span className="text-dim">— CORE</span>
       </h2>

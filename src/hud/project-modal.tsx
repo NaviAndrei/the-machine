@@ -59,7 +59,7 @@ export function ProjectModal() {
                 type="button"
                 onClick={() => selectProject(null)}
                 aria-label="Close project card"
-                className="border border-dim/40 px-2 py-0.5 text-[10px] tracking-widest text-dim transition-colors hover:border-neon hover:text-neon"
+                className="border border-dim/40 px-2 py-0.5 text-[10px] tracking-widest text-dim transition-colors motion-reduce:transition-none hover:border-neon hover:text-neon"
               >
                 [ESC] ✕
               </button>

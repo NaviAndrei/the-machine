@@ -11,6 +11,7 @@ const MOVE_SPEED = 5.4
 const TURN_SPEED = 2.1
 const TRAVEL_SPEED = 8.5
 const DRAG_SENSITIVITY = 0.0045
+const TOUCH_DRAG_SENSITIVITY = 0.0075
 
 export type ControlName = 'forward' | 'backward' | 'left' | 'right' | 'turnLeft' | 'turnRight'
 
@@ -83,15 +84,17 @@ export function Player() {
     const el = gl.domElement
     let dragging = false
     let lastX = 0
+    let sensitivity = DRAG_SENSITIVITY
     const down = (e: PointerEvent) => {
       if (e.button !== 0) return
       dragging = true
       lastX = e.clientX
+      sensitivity = e.pointerType === 'touch' ? TOUCH_DRAG_SENSITIVITY : DRAG_SENSITIVITY
       el.style.cursor = 'grabbing'
     }
     const move = (e: PointerEvent) => {
       if (!dragging) return
-      yaw.current -= (e.clientX - lastX) * DRAG_SENSITIVITY
+      yaw.current -= (e.clientX - lastX) * sensitivity
       lastX = e.clientX
       travel.current = null
     }

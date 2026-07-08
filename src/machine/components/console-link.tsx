@@ -88,7 +88,7 @@ export function ConsoleLink({ link, position, rotationY = 0, showAnchor }: Conso
             href={link.href}
             target={link.id === 'email' ? undefined : '_blank'}
             rel={link.id === 'email' ? undefined : 'noreferrer'}
-            className="holo-in block whitespace-nowrap border border-neon/40 bg-void/90 px-2 py-1 font-mono text-[10px] tracking-widest text-neon hover:bg-neon/10"
+            className="holo-in flex min-h-11 items-center justify-center whitespace-nowrap border border-neon/40 bg-void/90 px-3 py-1 font-mono text-[10px] tracking-widest text-neon hover:bg-neon/10 active:bg-neon/10"
           >
             OPEN {link.label} ↗
           </a>

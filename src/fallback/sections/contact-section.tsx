@@ -2,7 +2,7 @@ import { CONTACT_LINKS } from '../../data/contact'
 
 export function ContactSection() {
   return (
-    <section id="contact" aria-labelledby="contact-heading" className="py-16">
+    <section id="contact" aria-labelledby="contact-heading" className="scroll-mt-36 py-16">
       <h2 id="contact-heading" className="text-lg tracking-[0.25em] text-neon">
         /CONTACT <span className="text-dim">— I/O PORT</span>
       </h2>
@@ -17,11 +17,14 @@ export function ContactSection() {
               href={link.href}
               target={link.id === 'email' ? undefined : '_blank'}
               rel={link.id === 'email' ? undefined : 'noreferrer'}
-              className="group block border border-panel-2 bg-panel/50 p-4 transition-colors hover:border-neon/60"
+              className="group block border border-panel-2 bg-panel/50 p-4 transition-colors motion-reduce:transition-none hover:border-neon/60 active:border-neon/60"
             >
               <p className="flex items-baseline justify-between text-[10px] tracking-widest text-dim">
                 <span>{link.protocol}://</span>
-                <span aria-hidden="true" className="text-neon opacity-0 transition-opacity group-hover:opacity-100">
+                <span
+                  aria-hidden="true"
+                  className="text-neon opacity-0 transition-opacity group-hover:opacity-100 group-active:opacity-100"
+                >
                   ▸ OPEN
                 </span>
               </p>

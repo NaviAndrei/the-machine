@@ -114,7 +114,7 @@ export function BootScreen() {
           <button
             type="button"
             onClick={beginWipe}
-            className="absolute bottom-6 right-6 border border-dim/40 px-3 py-1.5 text-[11px] tracking-widest text-dim transition-colors hover:border-neon hover:text-neon sm:bottom-10 sm:right-10"
+            className="absolute bottom-6 right-6 border border-dim/40 px-3 py-1.5 text-[11px] tracking-widest text-dim transition-colors motion-reduce:transition-none hover:border-neon hover:text-neon sm:bottom-10 sm:right-10"
           >
             [ESC] SKIP BOOT ▸
           </button>

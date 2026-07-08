@@ -79,7 +79,7 @@ function Beacon({ room }: { room: RoomId }) {
         <button
           type="button"
           onClick={() => requestTravel(room)}
-          className="holo-in whitespace-nowrap border border-current/40 bg-void/90 px-2 py-1 font-mono text-[10px] tracking-widest opacity-0 focus:opacity-100"
+          className="holo-in flex min-h-11 min-w-11 items-center justify-center whitespace-nowrap border border-current/40 bg-void/90 px-2 py-1 font-mono text-[10px] tracking-widest opacity-0 focus:opacity-100"
           style={{ color: def.accent }}
         >
           TRAVEL TO {def.path} — {def.label}

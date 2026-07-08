@@ -8,7 +8,7 @@ const STATUS_STYLE: Record<string, string> = {
 
 export function ProjectsSection() {
   return (
-    <section id="projects" aria-labelledby="projects-heading" className="border-b border-panel-2 py-16">
+    <section id="projects" aria-labelledby="projects-heading" className="scroll-mt-36 border-b border-panel-2 py-16">
       <h2 id="projects-heading" className="text-lg tracking-[0.25em] text-neon">
         /PROJECTS <span className="text-dim">— STORAGE ARRAY</span>
       </h2>
@@ -44,7 +44,7 @@ export function ProjectsSection() {
       <ul className="mt-10 grid gap-4 sm:grid-cols-2">
         {PROJECTS.map((project) => (
           <li key={project.id}>
-            <article className="flex h-full flex-col border border-panel-2 bg-panel/50 p-4 transition-colors hover:border-dim">
+            <article className="flex h-full flex-col border border-panel-2 bg-panel/50 p-4 transition-colors motion-reduce:transition-none hover:border-dim">
               <div className="flex items-baseline justify-between gap-3">
                 <h3 className="text-sm text-ink">~/{project.name}</h3>
                 <span

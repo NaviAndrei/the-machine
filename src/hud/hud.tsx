@@ -4,15 +4,44 @@ import { useMachine } from '../state/store'
 import { ROOMS } from '../machine/layout'
 import { MiniMap } from './mini-map'
 
+// FIX: 3D onboarding overlay
+const VISITED_KEY = '3d-visited'
+
 export function Hud() {
   const currentRoom = useMachine((s) => s.currentRoom)
   const setMode = useMachine((s) => s.setMode)
   const [showHelp, setShowHelp] = useState(false)
-  const [showHint, setShowHint] = useState(true)
+  const [coarsePointer, setCoarsePointer] = useState(false)
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    try {
+      return localStorage.getItem(VISITED_KEY) !== 'true'
+    } catch {
+      return true
+    }
+  })
+
+  const dismissOnboarding = () => {
+    setShowOnboarding(false)
+    try {
+      localStorage.setItem(VISITED_KEY, 'true')
+    } catch {
+      /* storage unavailable — overlay will just show again next visit */
+    }
+  }
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowHint(false), 9000)
-    return () => clearTimeout(timer)
+    if (!showOnboarding) return
+    const timer = setTimeout(dismissOnboarding, 3000)
+    window.addEventListener('keydown', dismissOnboarding)
+    return () => {
+      clearTimeout(timer)
+      window.removeEventListener('keydown', dismissOnboarding)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showOnboarding])
+
+  useEffect(() => {
+    setCoarsePointer(window.matchMedia('(pointer: coarse)').matches)
   }, [])
 
   const room = ROOMS[currentRoom]
@@ -45,14 +74,14 @@ export function Hud() {
           type="button"
           onClick={() => setShowHelp((v) => !v)}
           aria-expanded={showHelp}
-          className="border border-dim/40 bg-void/70 px-2.5 py-1.5 text-[11px] tracking-widest text-dim backdrop-blur transition-colors hover:border-volt hover:text-volt"
+          className="flex min-h-11 min-w-11 items-center justify-center border border-dim/40 bg-void/70 px-2.5 py-1.5 text-[11px] tracking-widest text-dim backdrop-blur transition-colors motion-reduce:transition-none hover:border-volt hover:text-volt active:border-volt active:text-volt"
         >
           [?]
         </button>
         <button
           type="button"
           onClick={() => setMode('2d')}
-          className="border border-dim/40 bg-void/70 px-2.5 py-1.5 text-[11px] tracking-widest text-dim backdrop-blur transition-colors hover:border-neon hover:text-neon"
+          className="flex min-h-11 items-center justify-center border border-dim/40 bg-void/70 px-2.5 py-1.5 text-[11px] tracking-widest text-dim backdrop-blur transition-colors motion-reduce:transition-none hover:border-neon hover:text-neon active:border-neon active:text-neon"
         >
           2D MODE
         </button>
@@ -70,11 +99,21 @@ export function Hud() {
           >
             <p className="tracking-[0.3em] text-volt">CONTROLS</p>
             <ul className="mt-3 space-y-1.5">
-              <li><span className="text-ink">W A S D / ↑↓</span> — move</li>
-              <li><span className="text-ink">Q E / ← →</span> — turn</li>
-              <li><span className="text-ink">DRAG</span> — look around</li>
-              <li><span className="text-ink">CLICK BEACON</span> — auto-travel</li>
-              <li><span className="text-ink">MAP ROOMS</span> — click to travel</li>
+              {coarsePointer ? (
+                <>
+                  <li><span className="text-ink">DRAG</span> — look around</li>
+                  <li><span className="text-ink">TAP BEACON</span> — auto-travel</li>
+                  <li><span className="text-ink">TAP MAP ROOM</span> — travel there</li>
+                </>
+              ) : (
+                <>
+                  <li><span className="text-ink">W A S D / ↑↓</span> — move</li>
+                  <li><span className="text-ink">Q E / ← →</span> — turn</li>
+                  <li><span className="text-ink">DRAG</span> — look around</li>
+                  <li><span className="text-ink">CLICK BEACON</span> — auto-travel</li>
+                  <li><span className="text-ink">MAP ROOMS</span> — click to travel</li>
+                </>
+              )}
             </ul>
             <p className="mt-3 border-t border-panel-2 pt-3">
               Prefer a quiet interface? <span className="text-neon">2D MODE</span> has everything, scrollable.
@@ -83,18 +122,23 @@ export function Hud() {
         )}
       </AnimatePresence>
 
-      {/* first-visit control hint */}
+      {/* FIX: 3D onboarding overlay — replaces the old always-shown bottom hint */}
       <AnimatePresence>
-        {showHint && (
-          <motion.p
+        {showOnboarding && (
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.4 }}
-            className="absolute bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap text-[10px] tracking-[0.25em] text-dim sm:text-[11px]"
+            transition={{ duration: 0.3 }}
+            onClick={dismissOnboarding}
+            className="pointer-events-auto absolute inset-0 flex items-center justify-center bg-void/50"
           >
-            WASD MOVE · DRAG LOOK · CLICK BEACONS TO TRAVEL
-          </motion.p>
+            <p className="whitespace-nowrap border border-neon/50 bg-void/90 px-5 py-3 text-[11px] tracking-[0.25em] text-neon sm:text-xs">
+              {coarsePointer
+                ? '[ DRAG: LOOK ] [ TAP BEACON: ENTER ]'
+                : '[ WASD: MOVE ] [ DRAG: LOOK ] [ CLICK: ENTER BEACON ]'}
+            </p>
+          </motion.div>
         )}
       </AnimatePresence>
 
